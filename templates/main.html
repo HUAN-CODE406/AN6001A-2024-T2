@@ -1,39 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+    <title>Loan Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        form {
+            width: 300px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
-
 <body>
-    <div class="container">
-        <h2>Main</h2>
-        <!-- 这里是添加的文字内容 -->
-        <div>
-            <h3>1. How do cloud platforms enable the storage and processing of large datasets required for real-world AI projects?</h3>
-            <p>
-                Cloud platforms support AI projects in handling large datasets by providing distributed storage, elastic computing resources, and efficient data processing tools. They dynamically adjust resources based on needs, rapidly process data via high-performance networks, and reduce costs with a pay-as-you-go model. These features make cloud platforms particularly valuable and effective for AI projects that require handling extensive data.
-            </p>
+    <h2 style="text-align:center;">Loan Application Form</h2>
+    <form id="loan-application-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required>
 
-            <h3>2. Why are web applications essential for providing user-friendly interfaces to deploy and interact with AI models?</h3>
-            <p>
-                That is because web applications can create intuitive interfaces to simplify complex technical processes, enabling non-technical users to easily use complex AI technologies without specialized technical expertise. For example, through browser interfaces, users can directly upload data, select models, and view results, significantly lowering the technical usage threshold. And web applications can run on any device and operating system, without installing specific software. And they also provide instant feedback and interactive interfaces, allowing users to observe the AI model's processing and output results in real-time.
-            </p>
+        <label for="account">Bank Account:</label>
+        <input type="text" id="account" required>
 
-            <h3>3. How do cloud services support the scalability of AI projects when handling high volumes of real-time data?</h3>
-            <p>
-                Cloud services significantly support the scalability of AI projects by providing dynamically adjustable computing resources and extensive storage solutions. They can be tailored to accommodate the fluctuating demands of real-time data volumes. They also offer a suite of user-friendly tools specifically designed for rapid data processing and analytics so that they can ensure AI applications to operate efficiently and effectively.
-            </p>
+        <label for="employment-status">Employment Status:</label>
+        <select id="employment-status" required>
+            <option value="employed">Employed</option>
+            <option value="self-employed">Self-employed</option>
+            <option value="unemployed">Unemployed</option>
+        </select>
 
-            <h3>4. How do web applications facilitate the integration of AI models into end-user environments for real-world applications?</h3>
-            <p>
-                Web applications facilitate the integration of AI models into real-world applications by providing an accessible interface that connects end-user environments to cloud-deployed AI capabilities. Developers embed AI functionalities directly into web applications, enhancing user interaction with features like personalized recommendations and automated customer service. Moreover, APIs allow for real-time data exchanges between the web apps and AI models, ensuring a seamless and updated user experience.
-            </p>
+        <label for="income">Income (USD):</label>
+        <input type="number" id="income" required>
 
-            <h3>5. How do cloud-based AI services simplify model training, deployment, and monitoring in real-world scenarios?</h3>
-            <p>
-                Cloud-based AI services streamline the processes of training, deploying, and monitoring models in real-world scenarios by providing scalable computing resources and integrated management tools. These platforms offer on-demand scalability, allowing data scientists to expand or reduce resources as needed for extensive model training, eliminating the need for costly on-premises hardware. Additionally, they feature one-click deployment options that simplify the transition of trained models into production environments. Monitoring tools available on these platforms also enable real-time tracking of model performance and resource utilization, ensuring any issues can be quickly identified and addressed.
-            </p>
-        </div>
-    </div>
+        <label for="default-record">Has Default Record:</label>
+        <input type="checkbox" id="default-record">
+
+        <label for="loan-amount">Loan Amount (USD):</label>
+        <input type="number" id="loan-amount" required>
+
+        <label for="loan-period">Loan Period (Months):</label>
+        <input type="number" id="loan-period" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="result" style="text-align:center; margin-top:20px;"></div>
+
+    <script>
+        // Handle form submission
+        document.getElementById("loan-application-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Collect data from form
+            const name = document.getElementById("name").value;
+            const account = document.getElementById("account").value;
+            const employmentStatus = document.getElementById("employment-status").value;
+            const income = document.getElementById("income").value;
+            const hasDefaultRecord = document.getElementById("default-record").checked;
+            const loanAmount = document.getElementById("loan-amount").value;
+            const loanPeriod = document.getElementById("loan-period").value;
+
+            // Prepare the data to send to the server
+            const data = {
+                name: name,
+                account: account,
+                employment_status: employmentStatus,
+                income: parseFloat(income),
+                has_default_record: hasDefaultRecord,
+                loan_amount: parseFloat(loanAmount),
+                loan_period: parseInt(loanPeriod)
+            };
+
+            // Send POST request to backend
+            fetch('http://127.0.0.1:5000/apply_loan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerHTML = `
+                    <h3>Loan Status</h3>
+                    <p><strong>Name:</strong> ${data.name}</p>
+                    <p><strong>Credit Score:</strong> ${data.credit_score}</p>
+                    <p><strong>Loan Status:</strong> ${data.loan_status}</p>
+                    <p><strong>Loan Amount:</strong> ${data.loan_amount}</p>
+                    <p><strong>Loan Period:</strong> ${data.loan_period} months</p>
+                `;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
-
-
+</html>
