@@ -1,118 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loan Application</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        form {
-            width: 300px;
-            margin: auto;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-        input[type="text"], input[type="number"], select {
-            width: 100%;
-            padding: 5px;
-            margin-top: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
 </head>
+
 <body>
-    <h2 style="text-align:center;">Loan Application Form</h2>
-    <form id="loan-application-form">
-        <label for="name">Name:</label>
-        <input type="text" id="name" required>
-
-        <label for="account">Bank Account:</label>
-        <input type="text" id="account" required>
-
-        <label for="employment-status">Employment Status:</label>
-        <select id="employment-status" required>
-            <option value="employed">Employed</option>
-            <option value="self-employed">Self-employed</option>
-            <option value="unemployed">Unemployed</option>
-        </select>
-
-        <label for="income">Income (USD):</label>
-        <input type="number" id="income" required>
-
-        <label for="default-record">Has Default Record:</label>
-        <input type="checkbox" id="default-record">
-
-        <label for="loan-amount">Loan Amount (USD):</label>
-        <input type="number" id="loan-amount" required>
-
-        <label for="loan-period">Loan Period (Months):</label>
-        <input type="number" id="loan-period" required>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <div id="result" style="text-align:center; margin-top:20px;"></div>
-
-    <script>
-        // Handle form submission
-        document.getElementById("loan-application-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            // Collect data from form
-            const name = document.getElementById("name").value;
-            const account = document.getElementById("account").value;
-            const employmentStatus = document.getElementById("employment-status").value;
-            const income = document.getElementById("income").value;
-            const hasDefaultRecord = document.getElementById("default-record").checked;
-            const loanAmount = document.getElementById("loan-amount").value;
-            const loanPeriod = document.getElementById("loan-period").value;
-
-            // Prepare the data to send to the server
-            const data = {
-                name: name,
-                account: account,
-                employment_status: employmentStatus,
-                income: parseFloat(income),
-                has_default_record: hasDefaultRecord,
-                loan_amount: parseFloat(loanAmount),
-                loan_period: parseInt(loanPeriod)
-            };
-
-            // Send POST request to backend
-            fetch('http://127.0.0.1:5000/apply_loan', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("result").innerHTML = `
-                    <h3>Loan Status</h3>
-                    <p><strong>Name:</strong> ${data.name}</p>
-                    <p><strong>Credit Score:</strong> ${data.credit_score}</p>
-                    <p><strong>Loan Status:</strong> ${data.loan_status}</p>
-                    <p><strong>Loan Amount:</strong> ${data.loan_amount}</p>
-                    <p><strong>Loan Period:</strong> ${data.loan_period} months</p>
-                `;
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
+    <div class="container">
+        <h2>Main</h2>
+        <form action="/genAI" method="post">
+            <p><input type="submit" value="genAI"></p>
+        </form>
+        <form action="/SA" method="post">
+            <p><input type="submit" value="Sentiment Analysis"></p>
+        </form>
+        <form action="/" method="post">
+            <p><input type="submit" value="End"></p>
+        </form>
+    </div>
 </body>
-</html>
